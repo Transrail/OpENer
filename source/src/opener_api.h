@@ -820,6 +820,21 @@ EipStatus
 ApplicationInitialization(void);
 
 /** @ingroup CIP_CALLBACK_API
+ * @brief Applications specific trace function
+ *
+ * This function is only mandatory when OpENer is built with the cmake
+ * build flag -DOpENer_TRACE_CUSTOM.  In this build mode it is up to the
+ * application to determine how to log the OpENer stack output.  All log
+ * messages are retained in the library, including log level, which can
+ * be converted into, e.g., UNIX syslog() levels and filtered on system
+ * level intead of in the application or OpENer.
+ *
+ * @param level the different log levels defined in the trace API
+ * @param fmt   a printf style format string
+ */
+void ApplicationTrace(int level, char *fmt, ...);
+
+/** @ingroup CIP_CALLBACK_API
  * @brief Allow the device specific application to perform its execution
  *
  * This function will be executed by the stack at the beginning of each

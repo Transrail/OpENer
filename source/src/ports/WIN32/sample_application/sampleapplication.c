@@ -6,6 +6,8 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "trace.h"
 #include "opener_api.h"
@@ -23,6 +25,9 @@
 #define DEMO_APP_HEARTBEAT_INPUT_ONLY_ASSEMBLY_NUM  152 //0x098
 #define DEMO_APP_HEARTBEAT_LISTEN_ONLY_ASSEMBLY_NUM 153 //0x099
 #define DEMO_APP_EXPLICT_ASSEMBLY_NUM              154 //0x09A
+
+/* local variables */
+static int log_level = 0x03;
 
 /* local functions */
 
@@ -112,6 +117,18 @@ EipStatus ApplicationInitialization(void) {
 #endif
 
   return kEipStatusOk;
+}
+
+/* Only used in -DOpENer_TRACE_CUSTOM builds */
+void ApplicationTrace(int level, char *fmt, ...) {
+  va_list ap;
+
+  if (!(log_level & level))
+    return;
+
+  va_start(ap, fmt);
+  vprintf(fmt, ap);
+  va_end(ap);
 }
 
 void HandleApplication(void) {

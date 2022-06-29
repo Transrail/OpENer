@@ -7,6 +7,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "opener_api.h"
 #include "appcontype.h"
@@ -27,6 +29,9 @@
 #define DEMO_APP_HEARTBEAT_LISTEN_ONLY_ASSEMBLY_NUM 153 //0x099
 #define DEMO_APP_EXPLICT_ASSEMBLY_NUM              154 //0x09A
 
+/* local variables */
+static int log_level = 0x03;
+
 /* global variables for demo application (4 assembly data fields)  ************/
 
 EipUint8 g_assembly_data064[32]; /* Input */
@@ -37,6 +42,7 @@ EipUint8 g_assembly_data09A[32]; /* Explicit */
 /* local functions */
 
 /* global functions called by the stack */
+
 EipStatus ApplicationInitialization(void) {
   /* create 3 assembly object instances*/
   /*INPUT*/
@@ -116,6 +122,18 @@ EipStatus ApplicationInitialization(void) {
 #endif
 
   return kEipStatusOk;
+}
+
+/* Only used in -DOpENer_TRACE_CUSTOM builds */
+void ApplicationTrace(int level, char *fmt, ...) {
+  va_list ap;
+
+  if (!(log_level & level))
+    return;
+
+  va_start(ap, fmt);
+  vprintf(fmt, ap);
+  va_end(ap);
 }
 
 void HandleApplication(void) {

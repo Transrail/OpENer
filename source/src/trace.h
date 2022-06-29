@@ -12,10 +12,6 @@
 
 #ifdef OPENER_WITH_TRACES
 
-#ifndef OPENER_INSTALL_AS_LIB
-#include "opener_user_conf.h"
-#endif
-
 /** @def OPENER_TRACE_LEVEL_ERROR Enable tracing of error messages. This is the
  *  default if no trace level is given.
  */
@@ -30,6 +26,23 @@
 /** @def OPENER_TRACE_LEVEL_INFO Enable tracing of info messages*/
 #define OPENER_TRACE_LEVEL_INFO 0x08
 
+/* @def OPENER_TRACE_ENABLED Can be used for conditional code compilation */
+#define OPENER_TRACE_ENABLED
+
+#ifdef OPENER_TRACE_CUSTOM
+#include "opener_api.h"
+
+#define OPENER_TRACE_ERR(...)   ApplicationTrace(OPENER_TRACE_LEVEL_ERROR, __VA_ARGS__);
+#define OPENER_TRACE_WARN(...)  ApplicationTrace(OPENER_TRACE_LEVEL_WARNING, __VA_ARGS__);
+#define OPENER_TRACE_STATE(...) ApplicationTrace(OPENER_TRACE_LEVEL_STATE, __VA_ARGS__);
+#define OPENER_TRACE_INFO(...)  ApplicationTrace(OPENER_TRACE_LEVEL_INFO, __VA_ARGS__);
+
+#else  /* Legacy tracing framework */
+
+#ifndef OPENER_INSTALL_AS_LIB
+#include "opener_user_conf.h"
+#endif
+
 #ifndef OPENER_TRACE_LEVEL
 #ifdef WIN32
 #pragma message( \
@@ -41,9 +54,6 @@
 
 #define OPENER_TRACE_LEVEL OPENER_TRACE_LEVEL_ERROR
 #endif
-
-/* @def OPENER_TRACE_ENABLED Can be used for conditional code compilation */
-#define OPENER_TRACE_ENABLED
 
 /** @def OPENER_TRACE_ERR(...) Trace error messages.
  *  In order to activate this trace level set the OPENER_TRACE_LEVEL_ERROR flag
@@ -81,6 +91,8 @@
   do {                                                                        \
     if (OPENER_TRACE_LEVEL_INFO & OPENER_TRACE_LEVEL) {LOG_TRACE(__VA_ARGS__);} \
   } while (0)
+
+#endif /* Application custom trace function */
 
 #else
 /* define the tracing macros empty in order to save space */
