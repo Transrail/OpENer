@@ -422,7 +422,7 @@ void CheckAndHandleTcpListenerSocket(void) {
 
   /* see if this is a connection request to the TCP listener*/
   if( true == CheckSocketSet(g_network_status.tcp_listener) ) {
-    OPENER_TRACE_INFO("networkhandler: new TCP connection\n");
+    // OPENER_TRACE_INFO("networkhandler: new TCP connection\n");
 
     new_socket = accept(g_network_status.tcp_listener, &addr, &len);
     if(new_socket == kEipInvalidSocket) {
@@ -578,15 +578,16 @@ void CheckAndHandleUdpGlobalBroadcastSocket(void) {
     if(received_size <= 0) { /* got error */
       int error_code = GetSocketErrorNumber();
       char *error_message = GetErrorMessage(error_code);
-      OPENER_TRACE_ERR(
-        "networkhandler: error on recvfrom UDP global broadcast port: %d - %s\n",
-        error_code,
-        error_message);
+
+      if (error_code != ECONNRESET) {
+        OPENER_TRACE_ERR("networkhandler: error on recvfrom UDP global broadcast port: %d - %s\n",
+                         error_code, error_message);
+      }
       FreeErrorMessage(error_message);
       return;
     }
 
-    OPENER_TRACE_INFO("Data received on global broadcast UDP:\n");
+//    OPENER_TRACE_INFO("Data received on global broadcast UDP:\n");
 
     const EipUint8 *receive_buffer = &incoming_message[0];
     int remaining_bytes = 0;
@@ -606,7 +607,7 @@ void CheckAndHandleUdpGlobalBroadcastSocket(void) {
     received_size = remaining_bytes;
 
     if(need_to_send > 0) {
-      OPENER_TRACE_INFO("UDP broadcast reply sent:\n");
+      // OPENER_TRACE_INFO("UDP broadcast reply sent:\n");
 
       /* if the active socket matches a registered UDP callback, handle a UDP packet */
       if(sendto( g_network_status.udp_unicast_listener,  /* sending from unicast port, due to strange behavior of the broadcast port */
@@ -647,15 +648,15 @@ void CheckAndHandleUdpUnicastSocket(void) {
     if(received_size <= 0) { /* got error */
       int error_code = GetSocketErrorNumber();
       char *error_message = GetErrorMessage(error_code);
-      OPENER_TRACE_ERR(
-        "networkhandler: error on recvfrom UDP unicast port: %d - %s\n",
-        error_code,
-        error_message);
+      if (error_code != ECONNRESET) {
+        OPENER_TRACE_ERR("networkhandler: error on recvfrom UDP unicast port: %d - %s\n",
+                         error_code, error_message);
+      }
       FreeErrorMessage(error_message);
       return;
     }
 
-    OPENER_TRACE_INFO("Data received on UDP unicast:\n");
+//    OPENER_TRACE_INFO("Data received on UDP unicast:\n");
 
     EipUint8 *receive_buffer = &incoming_message[0];
     int remaining_bytes = 0;
@@ -674,7 +675,7 @@ void CheckAndHandleUdpUnicastSocket(void) {
     received_size = remaining_bytes;
 
     if(need_to_send > 0) {
-      OPENER_TRACE_INFO("UDP unicast reply sent:\n");
+      // OPENER_TRACE_INFO("UDP unicast reply sent:\n");
 
       /* if the active socket matches a registered UDP callback, handle a UDP packet */
       if(sendto( g_network_status.udp_unicast_listener,
@@ -766,9 +767,9 @@ EipStatus HandleDataOnTcpSocket(int socket) {
       return kEipStatusOk;
     }
     char *error_message = GetErrorMessage(error_code);
-    OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n",
-                     error_code,
-                     error_message);
+    if (error_code != ECONNRESET) {
+	    OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n", error_code, error_message);
+    }
     FreeErrorMessage(error_message);
     return kEipStatusError;
   }
@@ -807,9 +808,10 @@ EipStatus HandleDataOnTcpSocket(int socket) {
         char *error_message = GetErrorMessage(error_code);
         if(OPENER_SOCKET_WOULD_BLOCK == error_code) {
           return kEipStatusOk;
-        } OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n",
-                           error_code,
-                           error_message);
+        }
+	if (error_code != ECONNRESET) {
+          OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n", error_code, error_message);
+	}
         FreeErrorMessage(error_message);
         return kEipStatusError;
       }
@@ -846,9 +848,10 @@ EipStatus HandleDataOnTcpSocket(int socket) {
     char *error_message = GetErrorMessage(error_code);
     if(OPENER_SOCKET_WOULD_BLOCK == error_code) {
       return kEipStatusOk;
-    } OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n",
-                       error_code,
-                       error_message);
+    }
+    if (error_code != ECONNRESET) {
+      OPENER_TRACE_ERR("networkhandler: error on recv: %d - %s\n", error_code, error_message);
+    }
     FreeErrorMessage(error_message);
     return kEipStatusError;
   }
@@ -1075,7 +1078,7 @@ void CheckAndHandleConsumingUdpSocket(void) {
              CheckSocketSet(current_connection_object->socket[
                               kUdpCommuncationDirectionConsuming
                             ]) ) ) {
-      OPENER_TRACE_INFO("Processing UDP consuming message\n");
+      // OPENER_TRACE_INFO("Processing UDP consuming message\n");
       struct sockaddr_in from_address = { 0 };
       socklen_t from_address_length = sizeof(from_address);
       CipOctet incoming_message[PC_OPENER_ETHERNET_BUFFER_SIZE] = { 0 };
@@ -1123,7 +1126,7 @@ void CheckAndHandleConsumingUdpSocket(void) {
 }
 
 void CloseSocket(const int socket_handle) {
-  OPENER_TRACE_INFO("networkhandler: closing socket %d\n", socket_handle);
+//  OPENER_TRACE_INFO("networkhandler: closing socket %d\n", socket_handle);
 
   if(kEipInvalidSocket != socket_handle) {
     FD_CLR(socket_handle, &master_socket);
