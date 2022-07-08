@@ -415,7 +415,7 @@ void CheckAndHandleTcpListenerSocket(void) {
     FD_SET(new_socket, &master_socket);
     /* add newfd to master set */
     if(new_socket > highest_socket_handle) {
-      OPENER_TRACE_INFO("New highest socket: %d\n", new_socket);
+//      OPENER_TRACE_INFO("New highest socket: %d\n", new_socket);
       highest_socket_handle = new_socket;
     }
 
@@ -642,7 +642,7 @@ EipStatus SendUdpData(const struct sockaddr_in *const address,
                       const int socket_handle,
                       const ENIPMessage *const outgoing_message) {
 
-  OPENER_TRACE_INFO("UDP port to be sent to: %x\n", ntohs(address->sin_port) );
+//  OPENER_TRACE_INFO("UDP port to be sent to: %x\n", ntohs(address->sin_port) );
   UDPHeader header = { .source_port = 2222, .destination_port = ntohs(
                          address->sin_port), .packet_length = kUdpHeaderLength
                                                               +
@@ -692,7 +692,7 @@ EipStatus SendUdpData(const struct sockaddr_in *const address,
 }
 
 EipStatus HandleDataOnTcpSocket(int socket) {
-  OPENER_TRACE_INFO("Entering HandleDataOnTcpSocket for socket: %d\n", socket);
+//  OPENER_TRACE_INFO("Entering HandleDataOnTcpSocket for socket: %d\n", socket);
   int remaining_bytes = 0;
   long data_sent = PC_OPENER_ETHERNET_BUFFER_SIZE;
 
@@ -746,9 +746,7 @@ EipStatus HandleDataOnTcpSocket(int socket) {
     /* Currently we will drop the whole packet */
 
     do {
-      OPENER_TRACE_INFO(
-        "Entering consumption loop, remaining data to receive: %ld\n",
-        data_sent);
+//      OPENER_TRACE_INFO("Entering consumption loop, remaining data to receive: %ld\n", data_sent);
       number_of_read_bytes = recv(socket,
                                   NWBUF_CAST & incoming_message[0],
                                   data_sent,
@@ -822,7 +820,7 @@ EipStatus HandleDataOnTcpSocket(int socket) {
     /*we got the right amount of data */
     data_size += 4;
     /*TODO handle partial packets*/
-    OPENER_TRACE_INFO("Data received on TCP: %" PRIuSZT "\n", data_size);
+//    OPENER_TRACE_INFO("Data received on TCP: %" PRIuSZT "\n", data_size);
 
     g_current_active_tcp_socket = socket;
 
@@ -862,9 +860,7 @@ EipStatus HandleDataOnTcpSocket(int socket) {
     }
 
     if(need_to_send > 0) {
-      OPENER_TRACE_INFO("TCP reply: send %" PRIuSZT " bytes on %d\n",
-                        outgoing_message.used_message_length,
-                        socket);
+//      OPENER_TRACE_INFO("TCP reply: send %" PRIuSZT " bytes on %d\n", outgoing_message.used_message_length, socket);
 
       data_sent = send(socket,
                        (char *) outgoing_message.message_buffer,
@@ -944,7 +940,7 @@ int CreateUdpSocket(UdpCommuncationDirection communication_direction,
     FreeErrorMessage(error_message);
   }
 
-  OPENER_TRACE_INFO("networkhandler: UDP socket %d\n", new_socket);
+//  OPENER_TRACE_INFO("networkhandler: UDP socket %d\n", new_socket);
 
   /* check if it is sending or receiving */
   if(communication_direction == kUdpCommuncationDirectionConsuming) {
@@ -971,7 +967,7 @@ int CreateUdpSocket(UdpCommuncationDirection communication_direction,
       return kEipInvalidSocket;
     }
 
-    OPENER_TRACE_INFO("networkhandler: bind UDP socket %d\n", new_socket);
+//    OPENER_TRACE_INFO("networkhandler: bind UDP socket %d\n", new_socket);
   } else { /* we have a producing UDP socket */
 
     /* For multicast socket setup the TTL and specify interface to send on. */
@@ -1036,7 +1032,7 @@ int CreateUdpSocket(UdpCommuncationDirection communication_direction,
   }
 
   if(new_socket > highest_socket_handle) {
-    OPENER_TRACE_INFO("New highest socket: %d\n", new_socket);
+//    OPENER_TRACE_INFO("New highest socket: %d\n", new_socket);
     highest_socket_handle = new_socket;
   }
   return new_socket;
