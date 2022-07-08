@@ -13,6 +13,7 @@
 
 #include <assert.h>
 #include <inttypes.h>
+#include <netdb.h>
 #include <stdbool.h>
 #include <signal.h>
 
@@ -384,11 +385,16 @@ EipBool8 CheckSocketSet(int socket) {
 
 void CheckAndHandleTcpListenerSocket(void) {
   int new_socket = kEipInvalidSocket;
+  char host[256] = { 0 };
+  struct sockaddr addr;
+  socklen_t len = sizeof(addr);
+  int rc;
+
   /* see if this is a connection request to the TCP listener*/
   if(true == CheckSocketSet(g_network_status.tcp_listener) ) {
     OPENER_TRACE_INFO("networkhandler: new TCP connection\n");
 
-    new_socket = accept(g_network_status.tcp_listener, NULL, NULL);
+    new_socket = accept(g_network_status.tcp_listener, &addr, &len);
     if(new_socket == kEipInvalidSocket) {
       int error_code = GetSocketErrorNumber();
       char *error_message = GetErrorMessage(error_code);
@@ -396,8 +402,13 @@ void CheckAndHandleTcpListenerSocket(void) {
                        error_code, error_message);
       FreeErrorMessage(error_message);
       return;
-    } OPENER_TRACE_INFO(">>> network handler: accepting new TCP socket: %d \n",
-                        new_socket);
+    }
+
+    if ((rc = getnameinfo(&addr, len, host, sizeof(host), NULL, 0, NI_NUMERICHOST))) {
+      OPENER_TRACE_INFO(">>> network handler: accepting new TCP socket: %d \n", new_socket);
+    } else {
+      OPENER_TRACE_INFO(">>> network handler: accepted TCP connection from %s on socket: %d \n", host, new_socket);
+    }
 
     SocketTimer *socket_timer = SocketTimerArrayGetEmptySocketTimer(
       g_timestamps,
@@ -419,8 +430,11 @@ void CheckAndHandleTcpListenerSocket(void) {
       highest_socket_handle = new_socket;
     }
 
-    OPENER_TRACE_STATE("networkhandler: opened new TCP connection on fd %d\n",
-                       new_socket);
+    if (host[0] == 0) {
+      OPENER_TRACE_STATE("networkhandler: opened new TCP connection on fd %d\n", new_socket);
+    } else {
+      OPENER_TRACE_STATE("networkhandler: new TCP connection from %s\n", host);
+    }
   }
 }
 
