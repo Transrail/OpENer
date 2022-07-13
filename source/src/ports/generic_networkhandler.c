@@ -563,8 +563,7 @@ void CheckAndHandleUdpGlobalBroadcastSocket(void) {
     struct sockaddr_in from_address = { 0 };
     socklen_t from_address_length = sizeof(from_address);
 
-    OPENER_TRACE_STATE(
-      "networkhandler: unsolicited UDP message on EIP global broadcast socket\n");
+//    OPENER_TRACE_INFO("networkhandler: unsolicited UDP message on EIP global broadcast socket\n");
 
     /* Handle UDP broadcast messages */
     CipOctet incoming_message[PC_OPENER_ETHERNET_BUFFER_SIZE] = { 0 };
@@ -633,8 +632,7 @@ void CheckAndHandleUdpUnicastSocket(void) {
     struct sockaddr_in from_address = { 0 };
     socklen_t from_address_length = sizeof(from_address);
 
-    OPENER_TRACE_STATE(
-      "networkhandler: unsolicited UDP message on EIP unicast socket\n");
+//    OPENER_TRACE_INFO("networkhandler: unsolicited UDP message on EIP unicast socket\n");
 
     /* Handle UDP broadcast messages */
     CipOctet incoming_message[PC_OPENER_ETHERNET_BUFFER_SIZE] = { 0 };
