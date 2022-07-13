@@ -36,7 +36,7 @@
 EipStatus NvdataLoad(void) {
   /* Load NV data for QoS object instance */
   EipStatus eip_status = NvQosLoad(&g_qos);
-  if (kEipStatusError != eip_status) {
+  if (kEipStatusError == eip_status) {
     eip_status =
       (kEipStatusError == NvQosStore(&g_qos) ) ? kEipStatusError : eip_status;
   }
