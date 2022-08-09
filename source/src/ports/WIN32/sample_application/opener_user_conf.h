@@ -140,7 +140,7 @@ typedef unsigned short in_port_t;
  *  void configureInputOnlyConnectionPoint(unsigned int pa_unConnNum, unsigned int pa_unOutputAssembly, unsigned int pa_unInputAssembly, unsigned int pa_unConfigAssembly)
  *
  */
-#define OPENER_CIP_NUM_INPUT_ONLY_CONNS 1
+#define OPENER_CIP_NUM_INPUT_ONLY_CONNS 2
 
 /** @brief Define the number of supported input only connections per connection path
  */
@@ -151,7 +151,7 @@ typedef unsigned short in_port_t;
  *  void configureListenOnlyConnectionPoint(unsigned int pa_unConnNum, unsigned int pa_unOutputAssembly, unsigned int pa_unInputAssembly, unsigned int pa_unConfigAssembly)
  *
  */
-#define OPENER_CIP_NUM_LISTEN_ONLY_CONNS 1
+#define OPENER_CIP_NUM_LISTEN_ONLY_CONNS 2
 
 /** @brief Define the number of supported Listen only connections per connection path
  */
