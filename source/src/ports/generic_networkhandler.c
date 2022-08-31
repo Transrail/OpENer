@@ -463,7 +463,7 @@ void CheckAndHandleTcpListenerSocket(void) {
     if (host[0] == 0) {
       OPENER_TRACE_STATE("networkhandler: opened new TCP connection on fd %d\n", new_socket);
     } else {
-      OPENER_TRACE_STATE("networkhandler: new TCP connection from %s\n", host);
+      OPENER_TRACE_STATE("networkhandler: new TCP connection from %s on socket %d\n", host, new_socket);
     }
   }
 }
