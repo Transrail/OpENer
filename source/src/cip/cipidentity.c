@@ -295,3 +295,8 @@ EipStatus CipIdentityInit() {
 
   return kEipStatusOk;
 }
+
+void ShutdownCipIdentity() {
+  if (g_identity.product_name.length != 0)
+    ClearCipShortString(&g_identity.product_name);
+}

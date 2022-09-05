@@ -81,6 +81,8 @@ extern CipIdentityObject g_identity;
  */
 EipStatus CipIdentityInit(void);
 
+void ShutdownCipIdentity(void);
+
 void CipIdentitySetStatusFlags(const CipWord status_flags);
 void CipIdentityClearStatusFlags(const CipWord status_flags);
 void CipIdentitySetExtendedDeviceStatus(
