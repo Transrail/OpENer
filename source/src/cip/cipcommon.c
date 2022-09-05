@@ -95,6 +95,8 @@ void ShutdownCipStack(void) {
 
   /*no clear all the instances and classes */
   DeleteAllClasses();
+
+  ShutdownCipIdentity();
 }
 
 EipStatus NotifyClass(const CipClass *RESTRICT const cip_class,
